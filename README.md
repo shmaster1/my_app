@@ -4,6 +4,13 @@
 A simple Ecommerce backend project built with Python and MySQL.
 It manages users, items, orders, and favorite items using a relational database design.
 
+- **User & order management** with real-time stock validation  
+- **AI shopping assistant** powered by OpenAI GPT  
+- **Interactive demo** via Streamlit for fast recruiter evaluation  
+- **Secure architecture** with JWT authentication and database-backed workflows  
+
+It’s designed as a **professional portfolio project** to showcase full-stack backend development, AI integration, and scalable architecture.
+
 
 ---
 
@@ -23,6 +30,53 @@ This project uses OpenAI (ChatGPT).
 If you are reviewing, cloning, or running this project locally (for example from GitHub), you must provide a valid OpenAI API key.
 
 For security reasons, no API key is included in the repository.
+
+---
+
+## 🏁 Quick Start
+
+Follow these steps to run the AI eCommerce project locally:
+
+1️⃣ Clone the repository
+
+git clone https://github.com/shmaster1/my_app.git
+cd ecommerce-ai
+
+
+2️⃣ Create a config file according to config_example.py Copy `config_example.py` to `config.py` and add your keys:
+
+
+EXAMPLE_KEY=example_value
+
+
+3️⃣ Start the database 🗄️
+
+Using Docker Compose:
+
+docker-compose -f docker-compose.yaml up
+
+
+4️⃣ Initialize the Database Tables 🗄️
+
+Once your MySQL database is running, you can create the necessary tables by executing the SQL script located in `resources/init/init.sql`
+ 
+
+5️⃣ Run the backend (FastAPI)
+
+uvicorn main:app --reload
+
+
+6️⃣Run the frontend (Streamlit)
+
+streamlit run app.py
+
+
+7️⃣ Open your browser
+
+
+ Load sample data (optional)
+
+Use the following SQL inserts for users, items, orders, and favorite items to quickly populate the database for testing.
 
 ---
 
