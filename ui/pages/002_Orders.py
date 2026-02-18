@@ -3,19 +3,14 @@ import streamlit as st
 import pandas as pd
 from sidebar_utils import side_bar_panel, check_auth
 
+
+ITEMS_ENDPOINT = "http://localhost:8000/item"
 # Settings
 st.set_page_config(layout="wide", page_title="My Orders")
 
 # --- SECURITY GUARD ---
 check_auth()
 side_bar_panel()
-
-
-##################################################################################################################
-################################################## IMPORTRANT!!! ################################################
-##################################################################################################################
-# TODO: ADD EVENT WHEN USER NAVIGATES HERE TO TRIGGER VALIDATE STOCK IN BE (IT SHOULD CHECK CURR STOCK VS EXIST ITEMS AND WARN RESPECTIVELY)
-
 
 
 if "last_action" in st.session_state:
@@ -128,9 +123,16 @@ if temp_order and (temp_order.get("items") or temp_order.get("order_items")):
                 st.error(f"Error: {e}")
 
     # --- STOCK CHECK BEFORE BUY NOW ---
-    if any(item.get("stock_available") == 0 for item in cart_items):
-        st.warning("⚠️ Some items are out of stock. Please adjust your cart.")
-        buy_now_disabled = True
+    for item in cart_items:
+        item_id = item.get("item_id")
+
+        res = requests.get(f"{ITEMS_ENDPOINT}/{item_id}")
+        item_data = res.json()
+
+        if item_data["stock_available"] == 0:
+            st.warning("⚠️ Items in your temp order are out of stock. Please adjust your cart.")
+            buy_now_disabled = True
+
     else:
         buy_now_disabled = False
 
