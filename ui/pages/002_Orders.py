@@ -5,6 +5,8 @@ from sidebar_utils import side_bar_panel, check_auth
 
 
 ITEMS_ENDPOINT = "http://localhost:8000/item"
+ORDERS_ENDPOINT = "http://localhost:8000/order"
+
 # Settings
 st.set_page_config(layout="wide", page_title="My Orders")
 
@@ -18,7 +20,6 @@ if "last_action" in st.session_state:
     del st.session_state.last_action # Clear it so it doesn't show again
 
 
-ORDERS_ENDPOINT = "http://localhost:8000/order"
 token = st.session_state.get("token")
 current_user = st.session_state.get("current_user")
 user_id = current_user["id"] if current_user else None
