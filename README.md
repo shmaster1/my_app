@@ -1,9 +1,45 @@
 
 # Order Management Backend System
+A modular eCommerce backend system built with FastAPI, MySQL, and OpenAI GPT integration.
 
-A simple Ecommerce backend project built with Python and MySQL.
-It manages users, items, orders, and favorite items using a relational database design.
+The system is intentionally designed as a modular monolith (single MySQL database)
+while being structured for future microservice extraction (e.g., Redis caching,
+separate AI service, async order processing).
 
+The system manages:
+
+* Users
+
+* Items & Inventory
+
+* Orders
+
+* Favorite Items
+
+* AI-powered chat assistant
+
+---
+
+## 🧱 Architecture Overview
+
+**The backend consists of:**
+
+- RESTful API built with FastAPI
+
+- MySQL relational database
+
+- Async DB access using databases
+
+- Dockerized environment
+
+- AI orchestration layer integrating OpenAI GPT
+
+- Streamlit-based frontend client
+
+- The AI layer intelligently routes:
+Structured eCommerce queries → Database
+
+- General conversational queries → GPT
 
 ---
 
@@ -15,6 +51,56 @@ It manages users, items, orders, and favorite items using a relational database 
 - FastAPI (optional / if applicable)
 - Streamlit
 - Open AI
+---
+
+## ⚙️ Setup Instructions / Quick Start
+
+1️⃣ Clone Repository
+git clone https://github.com/shmaster1/my_app.git
+cd ai_store
+
+2️⃣ Configure Environment Variables
+
+Create a config.py file inside config dir under the project root:
+
+MYSQL_USER=
+MYSQL_PASSWORD=
+MYSQL_DATABASE=
+MYSQL_HOST=
+MYSQL_PORT=
+DATABASE_URL=
+SELLER_SERVICE_BASE_URL=
+REDIS_HOST=
+REDIS_PORT=
+REDIS_TTL=
+SECRET_KEY=
+ALGORITHM=
+TOKEN_EXPIRY_TIME=
+OPEN_AI_KEY=
+SYSTEM_PROMPT=
+
+
+**A template file config.example is included.**
+
+⚠️ The OpenAI key is required for chat functionality.
+
+3️⃣ Run with Docker
+docker-compose -f docker-compose.yaml up
+
+4️⃣ python -m venv .venv
+source .venv/bin/activate   # macOS / Linux.
+
+pip install -r requirements.txt
+
+
+5️⃣ Run backend in terminal:
+
+uvicorn main:app --reload
+
+6️⃣ Run frontend in terminal:
+
+streamlit run ui/Main.py
+
 ---
 
 ## 🔐 OpenAI / ChatGPT API Key Setup
@@ -31,7 +117,7 @@ For security reasons, no API key is included in the repository.
 You can populate the database with the following sample data:
 
 
--- USERS:
+**-- USERS:**
 
 INSERT INTO users (username, first_name, last_name, email, phone, country, city, hashed_password, is_registered)
 VALUES
@@ -39,7 +125,8 @@ VALUES
 ('smith', 'Anna', 'Smith', 'anna.smith@example.com', '+33123456789', 'France', 'Paris', 'hashed_pw_2', TRUE),
 ('guest1', 'Guest', 'User', 'guest1@example.com', '+00000000000', 'N/A', 'N/A', NULL, FALSE);
 
--- ITEMS:
+**-- ITEMS:**
+
 INSERT INTO item (item_name, price, stock_available, image_url)
 VALUES
   ('Item 1', 10.00, 5,  'https://images.pexels.com/photos/161559/background-bitter-breakfast-bright-161559.jpeg'),
@@ -54,7 +141,7 @@ VALUES
   ('Item 10', 9.99, 1,  'https://images.pexels.com/photos/33579055/pexels-photo-33579055.png');
 
 
--- FAVORITE_ITEMS:
+**-- FAVORITE_ITEMS:**
 
 INSERT INTO favorite_items (user_id, item_id) VALUES
 (1, 1),  -- Keyboard
@@ -63,7 +150,7 @@ INSERT INTO favorite_items (user_id, item_id) VALUES
 (1, 7),  -- Item 3
 (1, 10); -- Item 6
 
--- ORDERS:
+**-- ORDERS:**
 
 INSERT INTO orders (user_id, order_date, shipping_address, total_price, status)
 VALUES
@@ -71,14 +158,14 @@ VALUES
 (2, '2026-01-21', '45 Rue de Paris, Paris, France', 219.98, 'CLOSED'),
 (3, '2026-01-22', 'Guest Address', 9.99, 'TEMP');
 
--- ORDER_ITEMS:
+**-- ORDER_ITEMS:**
 
 INSERT INTO order_items (order_id, item_id, item_quantities)
 VALUES (1, 2, 3);
 
 ---
 
-### 🚀 Future Scalability Considerations
+## 🚀 Future Scalability Considerations
 
 If this system needed to scale across teams or workloads, the following domains
 could be extracted into independent services:
@@ -89,7 +176,7 @@ could be extracted into independent services:
 
 This project is currently a modular monolith to avoid unnecessary complexity.
 
-### ⚡ User Access & Prompt Limits
+## ⚡ User Access & Prompt Limits
 
 - The chat is available to **any user**, including non-registered visitors, making it easy to try the demo without signing up.  
 - Each user session is limited to **5 prompts** to prevent overuse and ensure fair usage of the OpenAI API.  
@@ -97,7 +184,7 @@ This project is currently a modular monolith to avoid unnecessary complexity.
 - Registration can be added in the future for personalized experiences, persistent chat history, and advanced usage tracking.
 
 
-### 🧠 AI Design Decision
+## 🧠 AI Design Decision
 
 For this project, I used a pre-trained Large Language Model (GPT) to handle natural language understanding and conversational responses.
 
@@ -107,3 +194,28 @@ Training a supervised custom model for intent classification would require label
 - The GPT API (for general conversational responses).
 
 This approach keeps the system flexible, scalable, and aligned with modern AI application architecture.
+
+---
+## 🎯 What This Project Demonstrates
+
+1. Clean backend architecture
+2. Async programming
+3. Database transaction handling
+4. Environment-based configuration
+5. AI API orchestration
+6. Dockerized development workflow
+7. Production-like separation of concerns
+
+
+---
+## 📌 Future Improvements
+
+Redis caching layer
+
+Background task processing
+
+Persistent chat history
+
+CI/CD pipeline
+
+Unit & integration tests
