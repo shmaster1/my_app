@@ -1,6 +1,5 @@
 # Secrets
 config/config.py
-config/config_example.py
 __pycache__/
 *.pyc
 
