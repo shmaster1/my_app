@@ -1,4 +1,3 @@
-
 # Order Management Backend System
 A modular eCommerce backend system built with FastAPI, MySQL, and OpenAI GPT integration.
 
