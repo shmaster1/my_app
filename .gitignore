@@ -2,4 +2,8 @@
 config/config.py
 __pycache__/
 *.pyc
-
+Weaviate local storage
+weaviate_data/
+*.db
+modulesd/
+*.log
