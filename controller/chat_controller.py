@@ -1,9 +1,8 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Body
 from openai import OpenAI
 from config.config import Config
-from model.ecom.chat_request import ChatRequest
-from service import user_service
-from service.ecom import chat_service
+from model.chat_request import ChatRequest
+from service import chat_service, user_service
 
 router = APIRouter(
     prefix="/chat",

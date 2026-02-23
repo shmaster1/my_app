@@ -4,8 +4,7 @@ from typing import Dict
 from openai import OpenAI
 from service import order_service, favorite_item_service, item_service
 import json
-from repository import order_repository, item_repository
-from repository.ecom import chat_repository
+from repository import chat_repository, order_repository, item_repository
 
 MAX_PROMPTS = 5
 user_prompt_counter: Dict[int, int] = {}
