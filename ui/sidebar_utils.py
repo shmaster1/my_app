@@ -4,7 +4,7 @@ import requests
 import streamlit as st
 from login import show_login_page
 
-CHAT_END_POINT = "http://localhost:8000/chat"
+CHAT_END_POINT = "http://localhost:8000/ragchat"
 
 def side_bar_panel():
     st.markdown("""
@@ -102,7 +102,7 @@ def side_bar_panel():
                     try:
 
                         user_details =  {
-                                        "username" : st.session_state.current_user.get("username"),
+                                        "username" : user_id,
                                         "user_text": user_text
                         }
 
