@@ -102,7 +102,7 @@ def side_bar_panel():
                     try:
 
                         user_details =  {
-                                        "username" : user_id,
+                                        "user_id" : user_id,
                                         "user_text": user_text
                         }
 
