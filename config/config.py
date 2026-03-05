@@ -20,4 +20,9 @@ class Config(BaseSettings):
     SYSTEM_PROMPT: str = os.getenv("SYSTEM_PROMPT", "You are a helpful assistant.")
     WEAVIATE_BASE_URL: str = os.getenv("WEAVIATE_BASE_URL")
 
-settings = Config()
+    class Config:
+        env_file = ".env"
+        env_file_encoding = "utf-8"
+
+
+    settings = Config()
