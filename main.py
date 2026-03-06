@@ -1,3 +1,5 @@
+import asyncio
+
 from repository.database import database
 from controller.auth_controller import router as auth_router
 from controller.user_controller import router as user_router
@@ -23,6 +25,8 @@ app.include_router(chat_router)
 @app.on_event("startup")
 async def startup():
     await database.connect()
+    await asyncio.wait_for(database.connect(), timeout=10)
+
 
 
 @app.on_event("shutdown")
