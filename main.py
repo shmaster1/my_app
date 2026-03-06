@@ -7,10 +7,7 @@ from controller.item_controller import router as item_router
 from controller.favorite_items_controller import router as favorite_item_router
 from controller.order_controller import router as order_router
 from controller.chat_with_rag_controller import router as chat_router
-from fastapi import FastAPI, Request
-import json
-import time
-from starlette.responses import Response
+from fastapi import FastAPI
 
 
 app = FastAPI()
