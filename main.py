@@ -21,7 +21,6 @@ app.include_router(chat_router)
 
 @app.on_event("startup")
 async def startup():
-    await database.connect()
     await asyncio.wait_for(database.connect(), timeout=10)
 
 
