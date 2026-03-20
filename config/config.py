@@ -18,7 +18,8 @@ class Config(BaseSettings):
     TOKEN_EXPIRY_TIME: float = float(os.getenv("TOKEN_EXPIRY_TIME", "20"))
     OPEN_AI_KEY: str = os.getenv("OPEN_AI_KEY")
     SYSTEM_PROMPT: str = os.getenv("SYSTEM_PROMPT", "You are a helpful assistant.")
-    WEAVIATE_BASE_URL: str = os.getenv("WEAVIATE_BASE_URL")
+    WEAVIATE_BASE_URL: str = os.getenv("WEAVIATE_BASE_URL", "")
+    WEAVIATE_API_KEY: str
 
     class Config:
         env_file = ".env"

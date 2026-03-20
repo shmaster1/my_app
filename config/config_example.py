@@ -17,4 +17,5 @@ class Config(BaseSettings):
     TOKEN_EXPIRY_TIME: float = 20 # in minutes
     OPEN_AI_KEY: str = "sk-your-openai-key"
     SYSTEM_PROMPT: str = "You are a helpful assistant."
-    WEAVIATE_BASE_URL: str = "your weaviate base url"
+    WEAVIATE_BASE_URL: str = "your weaviate base url or sandbox if running the app is streamlit cloud"
+    WEAVIATE_API_KEY: str = "your weaviate api key if using sandbox"
