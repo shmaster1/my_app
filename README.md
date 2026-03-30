@@ -89,7 +89,7 @@ docker-compose -f docker-compose.yaml up
 4️⃣ python -m venv .venv
 source .venv/bin/activate   # macOS / Linux.
 
-pip install -r requirements.txt
+pip install -r requirements.txt for the ui there is a separated one
 
 
 5️⃣ Run backend in terminal:
@@ -100,6 +100,9 @@ uvicorn main:app --reload
 
 streamlit run ui/Main.py
 
+To visit the deployed frontend:
+
+https://myapp-ecommerce-prod.up.railway.app/
 ---
 
 ## 🔐 OpenAI / ChatGPT API Key Setup
