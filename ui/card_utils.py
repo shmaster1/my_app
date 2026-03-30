@@ -1,8 +1,10 @@
+import os
 import requests
 import streamlit as st
 
-FAVORITES_ENDPOINT = "http://localhost:8000/favorites"
-ORDERS_ENDPOINT = "http://localhost:8000/order/item"
+
+FAVORITES_ENDPOINT = os.getenv("BACKEND_URL", "http://localhost:8000") + "/favorites"
+ORDERS_ENDPOINT = os.getenv("BACKEND_URL", "http://localhost:8000") + "/item"
 DEFAULT_IMAGE = "https://images.pexels.com/photos/3394655/pexels-photo-3394655.jpeg"
 
 

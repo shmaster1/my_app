@@ -1,9 +1,11 @@
+import os
+
 import requests
 import streamlit as st
 import jwt
 
-AUTH_END_POINT = "http://localhost:8000/auth"
-USER_END_POINT = "http://localhost:8000/user"
+AUTH_END_POINT = os.getenv("BACKEND_URL", "http://localhost:8000") + "/auth"
+USER_END_POINT = os.getenv("BACKEND_URL", "http://localhost:8000") + "/user"
 
 
 def show_login_page():
