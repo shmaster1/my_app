@@ -89,8 +89,7 @@ docker-compose -f docker-compose.yaml up
 4️⃣ python -m venv .venv
 source .venv/bin/activate   # macOS / Linux.
 
-pip install -r requirements.txt for the ui there is a separated one
-
+pip install -r requirements.txt note: for the ui there is a separated one
 
 5️⃣ Run backend in terminal:
 
