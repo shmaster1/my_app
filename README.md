@@ -103,7 +103,6 @@ uvicorn main:app --reload
 streamlit run ui/Main.py
 
 To visit the deployed frontend:
-
 https://myapp-ecommerce-prod.up.railway.app/
 
 ---
