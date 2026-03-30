@@ -93,9 +93,6 @@ pip install -r requirements.txt
 
 The UI is built with Streamlit and has its own dependencies file at ui/requirements-ui.txt.
 
-To visit the deployed frontend:
-
-https://myapp-ecommerce-prod.up.railway.app/
 
 5️⃣ Run backend in terminal:
 
@@ -104,6 +101,10 @@ uvicorn main:app --reload
 6️⃣ Run frontend in terminal:
 
 streamlit run ui/Main.py
+
+To visit the deployed frontend:
+
+https://myapp-ecommerce-prod.up.railway.app/
 
 ---
 
