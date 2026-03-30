@@ -102,7 +102,8 @@ streamlit run ui/Main.py
 
 To visit the deployed frontend:
 
-https://myapp-ecommerce-prod.up.railway.app/
+## https://myapp-ecommerce-prod.up.railway.app/
+
 ---
 
 ## 🔐 OpenAI / ChatGPT API Key Setup
