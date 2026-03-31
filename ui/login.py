@@ -36,7 +36,7 @@ def show_login_page():
             if submit_clicked:
                 try:
                     payload = {"username": username, "password": pwd_input}
-                    res = requests.post(f"{AUTH_END_POINT}/token", data=payload, timeout=5, )
+                    res = requests.post(f"{AUTH_END_POINT}/token", data=payload, timeout=5)
 
                     if res.status_code == 200:
                         data = res.json()
@@ -89,7 +89,7 @@ def show_login_page():
                     else:
                         try:
                             # 2. SERVER-SIDE VALIDATION
-                            check_res = requests.get(f"{USER_END_POINT}/check-username/{username}", timeout=5, )
+                            check_res = requests.get(f"{USER_END_POINT}/check-username/{username}", timeout=5)
                             if check_res.status_code == 200:
                                 if check_res.json().get("is_taken"):
                                     st.error("Username taken, please try again ❌")
@@ -105,7 +105,7 @@ def show_login_page():
                                         "city": city,
                                         "password": password_input
                                     }
-                                    reg_res = requests.post(f"{USER_END_POINT}", json=payload, timeout=5, )
+                                    reg_res = requests.post(f"{USER_END_POINT}", json=payload, timeout=5)
 
                                     if reg_res.status_code == 201:
                                         user_data = reg_res.json()
@@ -128,8 +128,7 @@ def show_login_page():
                                         login_res = requests.post(
                                             f"{AUTH_END_POINT}/token",
                                             data={"username": username, "password": password_input},
-                                            timeout=5,
-                                            
+                                            timeout=5
                                         )
                                         if login_res.status_code == 200:
                                             st.session_state.token = login_res.json().get("jwt_token")

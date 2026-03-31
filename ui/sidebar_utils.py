@@ -109,8 +109,7 @@ def side_bar_panel():
                         response = requests.post(
                             f"{CHAT_END_POINT}",
                             json=user_details,
-                            timeout=15,
-                            
+                            timeout=15
                         )
 
                         if response.status_code == 200:
