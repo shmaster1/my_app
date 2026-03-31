@@ -66,11 +66,11 @@ def render_image_grid(items, cols_per_row=3, force_fav=False):
                         url = f"{FAVORITES_ENDPOINT}/user_id/{user_id}?item_id={item_id}"
                         try:
                             if is_fav:
-                                response = requests.delete(url, timeout=5)
+                                response = requests.delete(url, timeout=5, allow_redirects=True)
                                 if response.status_code == 200:
                                     st.toast("Removed! 🗑️")
                             else:
-                                response = requests.post(url, timeout=5)
+                                response = requests.post(url, timeout=5, allow_redirects=True)
                                 if response.status_code == 200:
                                     st.toast("Added! ❤️")
                             st.rerun()
@@ -107,7 +107,8 @@ def render_image_grid(items, cols_per_row=3, force_fav=False):
                                     f"{ORDERS_ENDPOINT}",
                                     json=payload,
                                     headers={"Authorization": f"Bearer {token}"},
-                                    timeout=5
+                                    timeout=5,
+                                    allow_redirects=True
                                 )
 
                                 if response.status_code in [200, 201]:
