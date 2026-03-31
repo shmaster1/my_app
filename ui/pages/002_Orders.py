@@ -6,8 +6,8 @@ import pandas as pd
 from sidebar_utils import side_bar_panel, check_auth
 
 
-ITEMS_ENDPOINT = os.getenv("BACKEND_URL", "http://localhost:8000") + "/item"
-ORDERS_ENDPOINT = os.getenv("BACKEND_URL", "http://localhost:8000") + "/order"
+ITEMS_ENDPOINT = os.getenv("BACKEND_URL", "http://localhost:8000") + "/item/"
+ORDERS_ENDPOINT = os.getenv("BACKEND_URL", "http://localhost:8000") + "/order/"
 
 
 # Settings
