@@ -28,7 +28,7 @@ if st.button("🗑️ Delete Account"):
     else:
         try:
             headers = {"Authorization": f"Bearer {token}"}
-            res = requests.delete(f"{USER_ENDPOINT}", headers=headers, timeout=5, allow_redirects=False)
+            res = requests.delete(f"{USER_ENDPOINT}", headers=headers, timeout=5)
 
             if res.status_code == 200:
                 st.success("Your account, orders, and favorites have been deleted!")
