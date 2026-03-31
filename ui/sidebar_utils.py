@@ -1,10 +1,12 @@
+import os
 import time
 import jwt
 import requests
 import streamlit as st
 from login import show_login_page
 
-CHAT_END_POINT = "http://localhost:8000/ragchat"
+CHAT_END_POINT = os.getenv("BACKEND_URL", "http://localhost:8000") + "/ragchat/"
+
 
 def side_bar_panel():
     st.markdown("""
