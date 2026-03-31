@@ -5,7 +5,7 @@ import requests
 from sidebar_utils import side_bar_panel, check_auth
 from card_utils import render_image_grid
 
-FAVORITES_ENDPOINT = os.getenv("BACKEND_URL", "http://localhost:8000") + "/favorites/"
+FAVORITES_ENDPOINT = os.getenv("BACKEND_URL", "http://localhost:8000") + "/favorites"
 
 st.set_page_config(layout="wide", page_title="My Favorites")
 
