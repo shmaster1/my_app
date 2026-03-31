@@ -110,7 +110,7 @@ def side_bar_panel():
                             f"{CHAT_END_POINT}",
                             json=user_details,
                             timeout=15,
-                            allow_redirects=True
+                            
                         )
 
                         if response.status_code == 200:
