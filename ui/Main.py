@@ -71,7 +71,8 @@ try:
         res = requests.get(
             f"{ITEM_END_POINT}/search",
             params={"name": search_query},
-            timeout=5
+            timeout=5,
+            allow_redirects=True
         )
 
     # --- Default mode ---
@@ -86,7 +87,8 @@ try:
         res = requests.get(
             f"{ITEM_END_POINT}/",
             params=params,
-            timeout=5
+            timeout=5,
+            allow_redirects=True
         )
 
     # --- Handle response ---
