@@ -4,7 +4,7 @@ import requests
 import streamlit as st
 from sidebar_utils import side_bar_panel, check_auth
 
-USER_ENDPOINT = os.getenv("BACKEND_URL", "http://localhost:8000") + "/user/"
+USER_ENDPOINT = os.getenv("BACKEND_URL", "http://localhost:8000") + "/user"
 
 
 check_auth()
@@ -28,7 +28,7 @@ if st.button("🗑️ Delete Account"):
     else:
         try:
             headers = {"Authorization": f"Bearer {token}"}
-            res = requests.delete(f"{USER_ENDPOINT}", headers=headers, timeout=5)
+            res = requests.delete(f"{USER_ENDPOINT}/", headers=headers, timeout=5)
 
             if res.status_code == 200:
                 st.success("Your account, orders, and favorites have been deleted!")

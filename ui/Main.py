@@ -8,7 +8,7 @@ from card_utils import render_image_grid
 # -----------------------------
 # 1. Page Config & API Config
 # -----------------------------
-ITEM_END_POINT = os.getenv("BACKEND_URL", "http://localhost:8000") + "/item/"
+ITEM_END_POINT = os.getenv("BACKEND_URL", "http://localhost:8000") + "/item"
 
 st.set_page_config(layout="wide", page_title="My Store")
 
