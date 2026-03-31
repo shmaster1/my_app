@@ -39,11 +39,7 @@ def fetch_order_data(user_id):
     try:
         # Using the Authorization header for GET as well, as backends often require it
         headers = {"Authorization": f"Bearer {token}"}
-        response = requests.get(f"{ORDERS_ENDPOINT}/user_id/{user_id}",
-                                headers=headers,
-                                timeout=5,
-                                allow_redirects=True
-)
+        response = requests.get(f"{ORDERS_ENDPOINT}/user_id/{user_id}", headers=headers, timeout=5)
         if response.status_code == 200:
             return response.json()
         return []
@@ -120,7 +116,7 @@ if temp_order and (temp_order.get("items") or temp_order.get("order_items")):
         if r5.button("🗑️", key=f"del_{item_id}_{idx}"):
             try:
                 url = f"{ORDERS_ENDPOINT}/item/{item_id}"
-                res = requests.delete(url, headers={"Authorization": f"Bearer {token}"}, allow_redirects=True)
+                res = requests.delete(url, headers={"Authorization": f"Bearer {token}"})
 
                 if res.status_code == 200:
                     st.session_state.last_action = "❌ Item removed!"
@@ -134,7 +130,7 @@ if temp_order and (temp_order.get("items") or temp_order.get("order_items")):
     for item in cart_items:
         item_id = item.get("item_id")
 
-        res = requests.get(f"{ITEMS_ENDPOINT}/{item_id}", allow_redirects=True)
+        res = requests.get(f"{ITEMS_ENDPOINT}/{item_id}")
         item_data = res.json()
 
         if item_data["stock_available"] == 0:
@@ -160,8 +156,7 @@ if temp_order and (temp_order.get("items") or temp_order.get("order_items")):
                 res = requests.post(
                     f"{ORDERS_ENDPOINT}/purchase_order",
                     headers={"Authorization": f"Bearer {token}"},
-                    json={"shipping_address": shipping_addr},
-                    allow_redirects=True
+                    json={"shipping_address": shipping_addr}
                 )
 
                 if res.ok:
