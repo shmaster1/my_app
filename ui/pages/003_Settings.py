@@ -4,7 +4,7 @@ import requests
 import streamlit as st
 from sidebar_utils import side_bar_panel, check_auth
 
-USER_ENDPOINT = os.getenv("BACKEND_URL", "http://localhost:8000") + "/user"
+USER_ENDPOINT = os.getenv("BACKEND_URL", "http://localhost:8000") + "/user/"
 
 
 check_auth()
