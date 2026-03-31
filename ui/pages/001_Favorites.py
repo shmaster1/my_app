@@ -30,7 +30,8 @@ if isinstance(user, dict) and user.get("id"):
     try:
         response = requests.get(
             f"{FAVORITES_ENDPOINT}/user_id/{user_id}",
-            timeout=5
+            timeout=5,
+            allow_redirects=True
         )
 
         if response.status_code == 200:
