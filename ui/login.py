@@ -4,8 +4,8 @@ import requests
 import streamlit as st
 import jwt
 
-AUTH_END_POINT = os.getenv("BACKEND_URL", "http://localhost:8000") + "/auth/"
-USER_END_POINT = os.getenv("BACKEND_URL", "http://localhost:8000") + "/user/"
+AUTH_END_POINT = os.getenv("BACKEND_URL", "http://localhost:8000") + "/auth"
+USER_END_POINT = os.getenv("BACKEND_URL", "http://localhost:8000") + "/user"
 
 
 def show_login_page():
@@ -105,7 +105,7 @@ def show_login_page():
                                         "city": city,
                                         "password": password_input
                                     }
-                                    reg_res = requests.post(f"{USER_END_POINT}", json=payload, timeout=5)
+                                    reg_res = requests.post(f"{USER_END_POINT}/", json=payload, timeout=5)
 
                                     if reg_res.status_code == 201:
                                         user_data = reg_res.json()
