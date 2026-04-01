@@ -84,7 +84,7 @@ try:
 
         params = {"user_id": user_id} if user_id else {}
         res = requests.get(
-            f"{ITEM_END_POINT}/",
+            f"{ITEM_END_POINT}",
             params=params,
             timeout=5
         )
