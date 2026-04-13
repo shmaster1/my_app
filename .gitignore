@@ -9,3 +9,4 @@ modulesd/
 *.log
 frontend/node_modules
 .next/
+.DS_Store

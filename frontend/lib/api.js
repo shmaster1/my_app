@@ -115,6 +115,12 @@ export const api = {
   }),
   purchaseOrder: () => apiFetch("/order/purchase_order", { method: "POST" }),
 
+  // Chat with RAG
+  sendChat: (userId, userText) => apiFetch("/ragchat/", {
+    method: "POST",
+    body: JSON.stringify({ user_id: userId, user_text: userText }),
+  }),
+
   // Favorites
   getFavorites: (userId) => apiFetch(`/favorites/user_id/${userId}`),
   addFavorite: (userId, itemId) => apiFetch(`/favorites/user_id/${userId}?item_id=${itemId}`, { method: "POST" }),

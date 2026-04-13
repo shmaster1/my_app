@@ -2,14 +2,15 @@ from openai import OpenAI
 
 
 async def handle_rag(user_message: str, client: OpenAI, weaviate_client):
-    # Step 1: create the vectors from the user input
+    # Step 1: embed the user query
     try:
         response = client.embeddings.create(
             model="text-embedding-3-small",
             input=user_message
         )
         user_embedding = response.data[0].embedding
-    except Exception:
+    except Exception as e:
+        print(f"[RAG] Embedding error: {e}")
         return "Unable to process your request right now (embedding error)."
 
     # Step 2: query Weaviate for similar chunks
@@ -21,15 +22,16 @@ async def handle_rag(user_message: str, client: OpenAI, weaviate_client):
             .with_limit(3)
             .do()
         )
-        chunks = result["data"]["Get"]["KnowledgeChunk"]
+        chunks = result.get("data", {}).get("Get", {}).get("KnowledgeChunk") or []
         retrieved_texts = [chunk["text"] for chunk in chunks]
-    except Exception:
+    except Exception as e:
+        print(f"[RAG] Weaviate query error: {e}")
         return "Knowledge base is currently unavailable."
 
     if not retrieved_texts:
         return "I don't have enough information to answer that."
 
-    context = "\n\n".join(retrieved_texts)  # the raw content before GPT polishes it
+    context = "\n\n".join(retrieved_texts)
 
     prompt_to_gpt = f"""
     You are an AI assistant.
@@ -55,6 +57,8 @@ async def handle_rag(user_message: str, client: OpenAI, weaviate_client):
             temperature=0
         )
         answer = gpt_response.choices[0].message.content
-    except Exception:
+    except Exception as e:
+        print(f"[RAG] GPT error: {e}")
         return "AI service is temporarily unavailable. Please try again later."
+
     return answer
