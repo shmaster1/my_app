@@ -1,5 +1,5 @@
 # Order Management Backend System
-A modular eCommerce backend system built with FastAPI, MySQL, and OpenAI GPT integration.
+A modular eCommerce system built with FastAPI, MySQL, Next.js, and OpenAI GPT integration.
 
 The system is intentionally designed as a modular monolith (single MySQL database)
 while being structured for future microservice extraction (e.g., Redis caching,
@@ -21,7 +21,7 @@ The system manages:
 
 ## 🧱 Architecture Overview
 
-**The backend consists of:**
+**The system consists of:**
 
 - RESTful API built with FastAPI
 
@@ -29,11 +29,11 @@ The system manages:
 
 - Async DB access using databases
 
-- Dockerized environment
+- Dockerized environment (backend, frontend, MySQL, Redis, Weaviate)
 
 - AI orchestration layer integrating OpenAI GPT
 
-- Streamlit-based frontend client
+- Next.js frontend (served at `http://localhost:3000`)
 
 - The AI layer intelligently routes:
 Structured eCommerce queries → Database
@@ -47,9 +47,11 @@ Structured eCommerce queries → Database
 - Python 3.x
 - MySQL 8
 - Docker & Docker Compose
-- FastAPI (optional / if applicable)
-- Streamlit
-- Open AI
+- FastAPI
+- Next.js 14 (React 18, Tailwind CSS)
+- Redis
+- Weaviate
+- OpenAI
 ---
 
 ## ⚙️ Setup Instructions / Quick Start
@@ -83,25 +85,21 @@ SYSTEM_PROMPT=
 
 ⚠️ The OpenAI key is required for chat functionality.
 
-3️⃣ Run with Docker
+3️⃣ Run with Docker (starts MySQL, Redis, Weaviate, and the Next.js frontend)
 docker-compose -f docker-compose.yaml up
 
-4️⃣ python -m venv .venv
-source .venv/bin/activate   # macOS / Linux.
+The frontend will be available at **http://localhost:3000**.
 
-pip install -r requirements.txt note: for the ui there is a separated one
+4️⃣ Set up and run the backend
+
+python -m venv .venv
+source .venv/bin/activate   # macOS / Linux
+
+pip install -r requirements.txt
 
 5️⃣ Run backend in terminal:
 
 uvicorn main:app --reload
-
-6️⃣ Run frontend in terminal:
-
-streamlit run ui/Main.py
-
-To visit the deployed frontend:
-
-## https://myapp-ecommerce-prod.up.railway.app/
 
 ---
 
@@ -207,6 +205,7 @@ This approach keeps the system flexible, scalable, and aligned with modern AI ap
 5. AI API orchestration
 6. Dockerized development workflow
 7. Production-like separation of concerns
+8. Modern React/Next.js frontend with Tailwind CSS
 
 
 ---

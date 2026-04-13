@@ -17,10 +17,13 @@ async def get_items() -> List[ItemResponse]:
 
 async def filter_items(name: str) -> List[Item]:
     items = await item_repository.filter_items(name)
-    return [Item
-            (item_name=item.item_name,
-             price=item.price,
-             stock_available=item.stock_available)
+    return [Item(
+                id=item.id,
+                item_name=item.item_name,
+                price=item.price,
+                stock_available=item.stock_available,
+                image_url=item.image_url,
+            )
             for item in items]
 
 async def get_item_by_id(item_id: int) -> Item:

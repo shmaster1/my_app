@@ -8,9 +8,18 @@ from controller.favorite_items_controller import router as favorite_item_router
 from controller.order_controller import router as order_router
 from controller.chat_with_rag_controller import router as chat_router
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(auth_router)
 app.include_router(user_router)
 app.include_router(item_router)
@@ -22,7 +31,6 @@ app.include_router(chat_router)
 @app.on_event("startup")
 async def startup():
     await asyncio.wait_for(database.connect(), timeout=10)
-
 
 
 @app.on_event("shutdown")
