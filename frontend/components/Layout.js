@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
+import ChatWidget from "./ChatWidget";
 
 const MAIN_PAGES = ["/", "/orders", "/favorites"];
 
@@ -21,6 +22,7 @@ export default function Layout({ children, onSearch }) {
       <main className="ml-60 pt-16 min-h-screen">
         {children}
       </main>
+      <ChatWidget />
     </div>
   );
 }
