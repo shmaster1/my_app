@@ -7,3 +7,4 @@ weaviate_data/
 *.db
 modulesd/
 *.log
+frontend/node_modules
