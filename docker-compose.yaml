@@ -31,10 +31,20 @@ services:
       AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: "true"
       PERSISTENCE_DATA_PATH: "/var/lib/weaviate"
       DEFAULT_VECTORIZER_MODULE: "none"
-      CLUSTER_HOSTNAME: "localhost"   # this forces single-node mode
-
+      CLUSTER_HOSTNAME: "localhost"
     volumes:
       - ./weaviate_data:/var/lib/weaviate
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: present_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://host.docker.internal:8000
     restart: unless-stopped
 
 volumes:
