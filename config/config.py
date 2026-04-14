@@ -20,6 +20,8 @@ class Config(BaseSettings):
     SYSTEM_PROMPT: str = os.getenv("SYSTEM_PROMPT", "You are a helpful assistant.")
     WEAVIATE_BASE_URL: str = os.getenv("WEAVIATE_BASE_URL", "")
     WEAVIATE_API_KEY: str
+    NEXT_PUBLIC_API_URL: str = os.getenv("NEXT_PUBLIC_API_URL", "")
+    ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
 
     class Config:
         env_file = ".env"
