@@ -1,6 +1,6 @@
 from typing import Optional, List
 
-from api.internal_api.seller_service import seller_service_api
+from api_old_ecom.internal_api.seller_service import seller_service_api
 from model.ecom.customer_favorite_item import CustomerFavoriteItem
 from model.ecom.customer_favorite_item_request import CustomerFavoriteItemRequest
 from model.ecom.customer_favorite_item_response import CustomerFavoriteItemResponse
