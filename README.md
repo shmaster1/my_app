@@ -62,7 +62,7 @@ cd ai_store
 
 2️⃣ Configure Environment Variables
 
-Create a config.py file inside config dir under the project root:
+Create a config.py and .env files inside config dir under the root:
 
 MYSQL_USER=
 MYSQL_PASSWORD=
