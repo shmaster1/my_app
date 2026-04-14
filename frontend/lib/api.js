@@ -1,7 +1,7 @@
 // Utility for connecting to your Python backend
 // Set NEXT_PUBLIC_API_URL in your .env.local or Vercel environment variables
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 async function apiFetch(path, options = {}) {
   const token = typeof window !== "undefined" ? localStorage.getItem("jwt_token") : null;
