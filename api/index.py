@@ -10,4 +10,3 @@ from main import app
 
 # 3. Vercel looks for 'app' or 'handler' by default
 handler = app
-app = handler
