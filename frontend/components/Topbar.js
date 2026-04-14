@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Search, ShoppingCart, Bell, ChevronDown, User, Settings } from "lucide-react";
+import { Search, ShoppingCart, Bell, ChevronDown, User, Settings, X } from "lucide-react";
 
 const GRADIENT_MAP = {
   "gradient-1": "from-violet-400 to-indigo-600",
@@ -27,7 +27,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCart } from "./CartContext";
 import CartDrawer from "./CartDrawer";
-import { getUsernameFromToken } from "../lib/api";
+import { getUsernameFromToken, getUserIdFromToken } from "../lib/api";
 
 function AvatarBubble({ avatarId, initials, size = "w-7 h-7" }) {
   if (!avatarId) {
@@ -58,6 +58,8 @@ export default function Topbar({ onSearch }) {
   const [profileOpen, setProfileOpen] = useState(false);
   const [avatarId, setAvatarId] = useState(null);
   const [initials, setInitials] = useState("");
+  const [showChatTooltip, setShowChatTooltip] = useState(false);
+  const tooltipTimerRef = useRef(null);
   const profileRef = useRef(null);
   const router = useRouter();
   const showSearch = router.pathname === "/";
@@ -71,6 +73,28 @@ export default function Topbar({ onSearch }) {
     if (username) setInitials(username.slice(0, 2).toUpperCase());
     return () => window.removeEventListener("storage", load);
   }, []);
+
+  // Show chat tooltip once per user after login
+  useEffect(() => {
+    const userId = getUserIdFromToken();
+    if (!userId) return;
+    const seenKey = `chat_tooltip_seen_${userId}`;
+    if (!localStorage.getItem(seenKey)) {
+      setShowChatTooltip(true);
+      tooltipTimerRef.current = setTimeout(() => {
+        setShowChatTooltip(false);
+        localStorage.setItem(seenKey, "1");
+      }, 7000);
+    }
+    return () => clearTimeout(tooltipTimerRef.current);
+  }, []);
+
+  const dismissChatTooltip = () => {
+    clearTimeout(tooltipTimerRef.current);
+    setShowChatTooltip(false);
+    const userId = getUserIdFromToken();
+    if (userId) localStorage.setItem(`chat_tooltip_seen_${userId}`, "1");
+  };
 
   const handleSearch = (e) => {
     setQuery(e.target.value);
@@ -122,10 +146,41 @@ export default function Topbar({ onSearch }) {
             )}
           </button>
 
-          {/* Notifications */}
-          <button className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-ash transition">
-            <Bell size={18} />
-          </button>
+          {/* Notifications + chat tooltip */}
+          <div className="relative">
+            <button
+              className="relative w-9 h-9 flex items-center justify-center rounded-xl hover:bg-ash transition"
+              onClick={dismissChatTooltip}
+            >
+              <Bell size={18} />
+              {showChatTooltip && (
+                <span className="absolute top-1 right-1 w-2 h-2 bg-pop rounded-full animate-ping" />
+              )}
+            </button>
+
+            {showChatTooltip && (
+              <div className="absolute top-full right-0 mt-2 z-50 animate-fade-in">
+                {/* Arrow pointing up toward the bell */}
+                <span className="absolute -top-2 right-3 w-0 h-0
+                  border-l-[6px] border-l-transparent
+                  border-r-[6px] border-r-transparent
+                  border-b-[8px] border-b-ink" />
+                <div className="bg-ink text-white text-xs rounded-2xl px-4 py-2.5 shadow-xl w-72 flex items-center gap-3">
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold mb-0.5">Hey! Got questions?</p>
+                    <p className="text-white/75">Ask me anything — orders, items, policies, or just chat!</p>
+                  </div>
+                  <button
+                    onClick={dismissChatTooltip}
+                    className="shrink-0 hover:opacity-70 transition"
+                    aria-label="Dismiss"
+                  >
+                    <X size={13} />
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Profile dropdown */}
           <div className="relative" ref={profileRef}>
