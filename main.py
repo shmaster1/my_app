@@ -15,7 +15,10 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://my-app-three-sigma-28.vercel.app"],
+    allow_origins=["http://localhost:3000",
+                   "https://my-app-three-sigma-28.vercel.app",
+                   "https://my-app-nu-olive-59.vercel.app"
+],
     allow_methods=["*"],
     allow_headers=["*"],
 )
