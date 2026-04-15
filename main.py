@@ -33,7 +33,10 @@ app.include_router(chat_router)
 
 @app.on_event("startup")
 async def startup():
-    await asyncio.wait_for(database.connect(), timeout=10)
+    try:
+        await asyncio.wait_for(database.connect(), timeout=30)
+    except Exception as e:
+        print(f"Database connection failed: {e}")
 
 
 @app.on_event("shutdown")
