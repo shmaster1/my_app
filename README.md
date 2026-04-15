@@ -1,3 +1,6 @@
+<img width="1496" height="836" alt="Screenshot 2026-04-15 at 16 38 29" src="https://github.com/user-attachments/assets/9d31c8dc-ef21-45bf-88ef-d01490b47eda" />
+
+
 # Order Management Backend System
 A modular eCommerce system built with FastAPI, MySQL, Next.js, and OpenAI GPT integration.
 
