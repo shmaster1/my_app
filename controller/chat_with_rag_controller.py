@@ -21,6 +21,7 @@ def get_weaviate_client():
     try:
         weaviate_client = weaviate.Client(
             url=config.WEAVIATE_BASE_URL,
+            auth_client_secret=weaviate.AuthApiKey(api_key=config.WEAVIATE_API_KEY),
             startup_period=2,
             timeout_config=(5, 15)  # tightened from 60s
         )
