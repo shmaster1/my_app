@@ -19,7 +19,7 @@ class Config(BaseSettings):
     OPEN_AI_KEY: str = os.getenv("OPEN_AI_KEY")
     SYSTEM_PROMPT: str = os.getenv("SYSTEM_PROMPT", "You are a helpful assistant.")
     WEAVIATE_BASE_URL: str = os.getenv("WEAVIATE_BASE_URL", "")
-    WEAVIATE_API_KEY: str
+    WEAVIATE_API_KEY: str = os.getenv("WEAVIATE_API_KEY", "")
     NEXT_PUBLIC_API_URL: str = os.getenv("NEXT_PUBLIC_API_URL", "")
     ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
 
