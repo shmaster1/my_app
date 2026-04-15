@@ -1,90 +1,43 @@
-import asyncio
+import weaviate
+from fastapi import APIRouter, HTTPException
+from openai import OpenAI
+from config.config import Config
+from model.chat_orchestrator import ChatOrchestratorRequest
+from service import chat_orchestrator_service
 
-from repository.database import database
-from controller.auth_controller import router as auth_router
-from controller.user_controller import router as user_router
-from controller.item_controller import router as item_router
-from controller.favorite_items_controller import router as favorite_item_router
-from controller.order_controller import router as order_router
-from controller.chat_with_rag_controller import router as chat_router
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+router = APIRouter(prefix="/ragchat", tags=["ragchat"])
+config = Config()
+openai_client = OpenAI(api_key=config.OPEN_AI_KEY)
+weaviate_client = None  # not initialized at import time
 
+def get_weaviate_client():
+    global weaviate_client
+    if weaviate_client is not None:
+        return weaviate_client
+    try:
+        weaviate_client = weaviate.Client(
+            url=config.WEAVIATE_BASE_URL,
+            startup_period=2,
+            timeout_config=(5, 15)  # tighter timeout
+        )
+        print("✅ Weaviate connected.")
+        return weaviate_client
+    except Exception as e:
+        print(f"⚠️ Weaviate connection failed: {e}")
+        return None
 
-app = FastAPI()
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:3000",
-                   "https://my-app-three-sigma-28.vercel.app",
-                   "https://my-app-nu-olive-59.vercel.app"
-],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-app.include_router(auth_router)
-app.include_router(user_router)
-app.include_router(item_router)
-app.include_router(favorite_item_router)
-app.include_router(order_router)
-app.include_router(chat_router)
-
-
-@app.on_event("startup")
-async def startup():
-    pass
-    # try:
-    #     await asyncio.wait_for(database.connect(), timeout=30)
-    # except Exception as e:
-    #     print(f"Database connection failed: {e}")
-
-@app.on_event("shutdown")
-async def shutdown():
-    await database.disconnect()
-
-@app.get("/")
-def root():
-    return {"status": "ok"}
-
-# UNCOMMENT TO ALLOW VIEW OF XHRs IN TERMINAL
-
-# @app.middleware("http")
-# async def log_requests(request: Request, call_next):
-#     start = time.time()
-#
-#     # Read request body
-#     body = await request.body()
-#     try:
-#         print("➡️ Request", request.method, request.url)
-#         print("Payload:", json.dumps(json.loads(body.decode("utf-8")), indent=2))
-#     except:
-#         print("Payload:", body.decode("utf-8"))
-#
-#     # Call the actual endpoint
-#     response = await call_next(request)
-#
-#     # Safely read the response body without breaking StreamingResponse
-#     response_body = b""
-#     async for chunk in response.body_iterator:
-#         response_body += chunk
-#
-#     # Rebuild response safely
-#     new_response = Response(
-#         content=response_body,
-#         status_code=response.status_code,
-#         headers=dict(response.headers),
-#         media_type=response.media_type
-#     )
-#
-#     # Log response
-#     try:
-#         print("⬅️ Response:", json.dumps(json.loads(response_body.decode("utf-8")), indent=2))
-#     except:
-#         print("⬅️ Response:", response_body.decode("utf-8"))
-#     print('-' * 80)
-#     print()
-#     print()
-#     print(f"Duration: {time.time() - start:.2f}s")
-#     return new_response
-#
+@router.post("/")
+async def chat_with_customer(request: ChatOrchestratorRequest):
+    client = get_weaviate_client()
+    if client is None:
+        raise HTTPException(
+            status_code=503,
+            detail="Chat service is temporarily unavailable."
+        )
+    ai_response = await chat_orchestrator_service.chat_with_customer(
+        user_message=request.user_text,
+        client=openai_client,
+        weaviate_client=client,
+        user_id=request.user_id
+    )
+    return ai_response
