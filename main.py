@@ -42,9 +42,10 @@ async def shutdown():
     if database.is_connected:
         await database.disconnect()
 
-@app.get("/")
+@app.api_route("/", methods=["GET", "HEAD"])
 def root():
     return {"status": "ok"}
+
 
 # UNCOMMENT TO ALLOW VIEW OF XHRs IN TERMINAL
 
