@@ -40,6 +40,9 @@ async def startup():
 async def shutdown():
     await database.disconnect()
 
+@app.get("/")
+def root():
+    return {"status": "ok"}
 
 # UNCOMMENT TO ALLOW VIEW OF XHRs IN TERMINAL
 
