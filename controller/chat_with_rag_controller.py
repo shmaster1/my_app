@@ -12,7 +12,7 @@ router = APIRouter(
 
 config = Config()
 openai_client = OpenAI(api_key=config.OPEN_AI_KEY)
-weaviate_client = None  # not initialized at import time
+weaviate_client = None
 
 def get_weaviate_client():
     global weaviate_client
@@ -23,7 +23,7 @@ def get_weaviate_client():
             url=config.WEAVIATE_BASE_URL,
             auth_client_secret=weaviate.AuthApiKey(api_key=config.WEAVIATE_API_KEY),
             startup_period=2,
-            timeout_config=(5, 15)  # tightened from 60s
+            timeout_config=(5, 15)
         )
         print("✅ Weaviate connected.")
         return weaviate_client
