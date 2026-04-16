@@ -19,15 +19,13 @@ async def handle_rag(user_message: str, client: OpenAI, weaviate_client):
 
     # Step 2: query Weaviate for similar chunks
     try:
-        result = (
-            weaviate_client.query
-            .get("KnowledgeChunk", ["text", "source"])
-            .with_near_vector({"vector": user_embedding})
-            .with_limit(3)
-            .do()
+        collection = weaviate_client.collections.get("KnowledgeChunk")
+        result = collection.query.near_vector(
+            near_vector=user_embedding,
+            limit=3,
+            return_properties=["text", "source"]
         )
-        chunks = result.get("data", {}).get("Get", {}).get("KnowledgeChunk") or []
-        retrieved_texts = [chunk["text"] for chunk in chunks]
+        retrieved_texts = [obj.properties["text"] for obj in result.objects]
     except Exception as e:
         print(f"[RAG] Weaviate query error: {e}")
         return "Knowledge base is currently unavailable."
@@ -71,7 +69,7 @@ async def handle_rag(user_message: str, client: OpenAI, weaviate_client):
 async def get_semantic_recommendations(user_query: str):
     client = weaviate.connect_to_weaviate_cloud(
         cluster_url= os.environ.get("WEAVIATE_CLOUD_BASE_URL"),
-        auth_credentials=os.environ.get("WEAVIATE_CLOUD_API_KEY"),
+        auth_credentials=Auth.api_key(os.environ.get("WEAVIATE_CLOUD_API_KEY")),
         headers={
             "X-OpenAI-Api-Key": os.getenv("OPEN_AI_KEY")
         }
