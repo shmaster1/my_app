@@ -34,6 +34,18 @@ async def chat_with_customer(user_message: str, client: OpenAI, weaviate_client,
     elif intent == "knowledge_base":
         return await rag_service.handle_rag(user_message, client, weaviate_client)
 
+    elif intent == "product_search":
+        recommended_items = await rag_service.get_semantic_recommendations(user_message)
+
+        if not recommended_items:
+            return {"response": "I couldn't find any items matching that description. Anything else?"}
+        # Return structured data so your frontend can show product cards
+        return {
+            "answer": "I found some precious items that match your request:",
+            "type": "product_recommendation",
+            "products": recommended_items
+    }
+
     # 3️⃣ Fallback — General GPT
     general_messages = [
         {"role": "system", "content": "You are a helpful AI assistant for an e-commerce platform."},
@@ -46,24 +58,17 @@ async def chat_with_customer(user_message: str, client: OpenAI, weaviate_client,
 
 async def detect_intent(user_message: str, client: OpenAI) -> str:
     system_prompt = """
-    You are an AI intent classifier for an e-commerce backend.
+        You are an AI intent classifier for a luxury e-commerce store.
+        Classify the user's message into exactly one of these categories:
 
-    Classify the user request into ONE of these intents:
-    - db_orders
-    - db_favorites
-    - db_items
-    - db_cart
-    - knowledge_base
-    - general
-
-    Rules:
-    - If the question requires live user data (orders, favorites, cart) → db_*
-    - If it asks about stock/inventory → db_items
-    - If it asks about policies, explanations, documentation → knowledge_base
-    - If unrelated to platform data → general
-
-    Return ONLY valid JSON:
-    {"intent": "<intent_name>"}
+        - db_orders: Questions about order status, tracking, or history.
+        - db_cart: Viewing, adding to, or removing items from the shopping cart.
+        - product_search: Requests for recommendations, gift ideas, or questions about item qualities 
+          (e.g., "Show me precious items," "I need an elegant gift," "What is the most expensive thing you have?").
+        - knowledge_base: Store policies, shipping info, or "About Us" info.
+        - general: Greetings, small talk, or unrelated questions.
+        
+        Return ONLY a JSON object: {"intent": "category_name"}
     """
 
     messages = [

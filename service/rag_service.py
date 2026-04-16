@@ -1,4 +1,8 @@
+import os
+
+import weaviate
 from openai import OpenAI
+from weaviate.classes.init import Auth
 
 
 async def handle_rag(user_message: str, client: OpenAI, weaviate_client):
@@ -62,3 +66,39 @@ async def handle_rag(user_message: str, client: OpenAI, weaviate_client):
         return "AI service is temporarily unavailable. Please try again later."
 
     return answer
+
+
+async def get_semantic_recommendations(user_query: str):
+    client = weaviate.connect_to_weaviate_cloud(
+        cluster_url= os.environ.get("WEAVIATE_CLOUD_BASE_URL"),
+        auth_credentials=os.environ.get("WEAVIATE_CLOUD_API_KEY"),
+        headers={
+            "X-OpenAI-Api-Key": os.getenv("OPEN_AI_KEY")
+        }
+    )
+
+    try:
+        products = client.collections.get("Product")
+
+        response = products.query.near_text(
+            query=user_query,
+            limit=3,
+            return_properties=["itemName", "price", "itemID", "content"]
+        )
+
+        results = []
+        for obj in response.objects:
+            results.append({
+                "id": obj.properties["itemID"],
+                "name": obj.properties["itemName"],
+                "price": obj.properties["price"],
+                "description": obj.properties["content"]
+            })
+
+        return results
+
+    except Exception as e:
+        print(f"[Weaviate] Semantic search error: {e}")
+        return []
+    finally:
+        client.close()
