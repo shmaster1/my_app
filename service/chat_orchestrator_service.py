@@ -36,17 +36,24 @@ async def chat_with_customer(user_message: str, client: OpenAI, weaviate_client,
         return {"response": answer}
 
     elif intent == "product_search":
-        recommended_items = await rag_service.get_semantic_recommendations(user_message, weaviate_client)
-
-        if not recommended_items:
-            return {"response": "I couldn't find any items matching that description. Anything else?"}
-
         price_sort = rag_service._detect_price_sort(user_message)
-        if price_sort == "asc":
-            answer = "Here are the most affordable items:"
-        elif price_sort == "desc":
-            answer = "Here are the most expensive items:"
+
+        if price_sort:
+            # Price-based query: skip semantic search, go straight to DB sorted by price
+            items = await item_service.get_items()
+            if not items:
+                return {"response": "No items are currently available."}
+            sorted_items = sorted(items, key=lambda i: i.price, reverse=(price_sort == "desc"))
+            recommended_items = [
+                {"id": i.id, "name": i.item_name, "price": i.price}
+                for i in sorted_items[:3]
+            ]
+            answer = "Here are the most affordable items:" if price_sort == "asc" else "Here are the most expensive items:"
         else:
+            # Semantic query: use Weaviate
+            recommended_items = await rag_service.get_semantic_recommendations(user_message, weaviate_client)
+            if not recommended_items:
+                return {"response": "I couldn't find any items matching that description. Anything else?"}
             answer = "I found some items that match your request:"
 
         return {
