@@ -1,6 +1,7 @@
 import weaviate
 from fastapi import APIRouter, HTTPException
 from openai import OpenAI
+from weaviate.classes.init import Auth
 from config.config import Config
 from model.chat_orchestrator import ChatOrchestratorRequest
 from service import chat_orchestrator_service
@@ -16,19 +17,19 @@ weaviate_client = None
 
 def get_weaviate_client():
     global weaviate_client
-    if weaviate_client is not None:
+    if weaviate_client is not None and weaviate_client.is_ready():
         return weaviate_client
     try:
-        weaviate_client = weaviate.Client(
-            url=config.WEAVIATE_BASE_URL,
-            auth_client_secret=weaviate.AuthApiKey(api_key=config.WEAVIATE_API_KEY),
-            startup_period=2,
-            timeout_config=(5, 15)
+        weaviate_client = weaviate.connect_to_weaviate_cloud(
+            cluster_url=config.WEAVIATE_BASE_URL,
+            auth_credentials=Auth.api_key(config.WEAVIATE_API_KEY),
+            headers={"X-OpenAI-Api-Key": config.OPEN_AI_KEY}
         )
         print("✅ Weaviate connected.")
         return weaviate_client
     except Exception as e:
         print(f"⚠️ Weaviate connection failed: {e}")
+        weaviate_client = None
         return None
 
 @router.post("/")
