@@ -21,7 +21,7 @@ class Config(BaseSettings):
     NEXT_PUBLIC_API_URL: str = ""
     ANTHROPIC_API_KEY: str = ""
 
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 #
 # class Config(BaseSettings):
 #     MYSQL_USER: str = os.getenv("MYSQL_USER")
