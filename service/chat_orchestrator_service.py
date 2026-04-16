@@ -35,7 +35,7 @@ async def chat_with_customer(user_message: str, client: OpenAI, weaviate_client,
         return await rag_service.handle_rag(user_message, client, weaviate_client)
 
     elif intent == "product_search":
-        recommended_items = await rag_service.get_semantic_recommendations(user_message)
+        recommended_items = await rag_service.get_semantic_recommendations(user_message, weaviate_client)
 
         if not recommended_items:
             return {"response": "I couldn't find any items matching that description. Anything else?"}
