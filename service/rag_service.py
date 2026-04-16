@@ -1,8 +1,4 @@
-import os
-
-import weaviate
 from openai import OpenAI
-from weaviate.classes.init import Auth
 
 
 async def handle_rag(user_message: str, client: OpenAI, weaviate_client):
@@ -66,17 +62,9 @@ async def handle_rag(user_message: str, client: OpenAI, weaviate_client):
     return answer
 
 
-async def get_semantic_recommendations(user_query: str):
-    client = weaviate.connect_to_weaviate_cloud(
-        cluster_url= os.environ.get("WEAVIATE_CLOUD_BASE_URL"),
-        auth_credentials=Auth.api_key(os.environ.get("WEAVIATE_CLOUD_API_KEY")),
-        headers={
-            "X-OpenAI-Api-Key": os.getenv("OPEN_AI_KEY")
-        }
-    )
-
+async def get_semantic_recommendations(user_query: str, weaviate_client):
     try:
-        products = client.collections.get("Product")
+        products = weaviate_client.collections.get("Product")
 
         response = products.query.near_text(
             query=user_query,
@@ -98,5 +86,3 @@ async def get_semantic_recommendations(user_query: str):
     except Exception as e:
         print(f"[Weaviate] Semantic search error: {e}")
         return []
-    finally:
-        client.close()
