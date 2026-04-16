@@ -69,16 +69,16 @@ async def get_semantic_recommendations(user_query: str, weaviate_client):
         response = products.query.near_text(
             query=user_query,
             limit=3,
-            return_properties=["item_name", "price", "item_id", "description"]
+            return_properties=["itemName", "price", "itemID", "content"]
         )
 
         results = []
         for obj in response.objects:
             results.append({
-                "id": obj.properties["item_id"],
-                "name": obj.properties["item_name"],
+                "id": obj.properties["itemID"],
+                "name": obj.properties["itemName"],
                 "price": obj.properties["price"],
-                "description": obj.properties["description"]
+                "description": obj.properties["content"]
             })
 
         return results
