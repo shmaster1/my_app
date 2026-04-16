@@ -72,18 +72,17 @@ def _detect_price_sort(query: str):
 
 
 async def get_semantic_recommendations(user_query: str, weaviate_client):
-    from weaviate.classes.query import Sort
-
     try:
         products = weaviate_client.collections.get("Item")
 
         price_sort = _detect_price_sort(user_query)
+        # Fetch more candidates when sorting by price so the sort is meaningful
+        fetch_limit = 10 if price_sort else 3
 
         response = products.query.near_text(
             query=user_query,
-            limit=3,
+            limit=fetch_limit,
             return_properties=["itemName", "price", "itemID", "content"],
-            sort=Sort.by_property("price", ascending=(price_sort == "asc")) if price_sort else None
         )
 
         results = []
@@ -94,6 +93,10 @@ async def get_semantic_recommendations(user_query: str, weaviate_client):
                 "price": obj.properties["price"],
                 "description": obj.properties["content"]
             })
+
+        if price_sort:
+            results.sort(key=lambda x: x["price"], reverse=(price_sort == "desc"))
+            results = results[:3]
 
         return results
 
