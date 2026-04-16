@@ -13,47 +13,56 @@ async def chat_with_customer(user_message: str, client: OpenAI, weaviate_client,
         orders = await order_service.get_all_by_user_id(user_id)
         if not orders:
             return {"response": "You have no orders yet."}
-        return str("\n\n".join(f"Order status: {o.status.value}, Total: ${o.total_price}" for o in orders))
+        return {"response": "\n\n".join(f"Order status: {o.status.value}, Total: ${o.total_price}" for o in orders)}
 
     elif intent == "db_favorites":
         favorites = await favorite_item_service.get_favorite_items_by_user_id(user_id)
         if not favorites:
             return {"response": "You have no favorites yet."}
-        return str(", ".join(f.item_name for f in favorites))
+        return {"response": ", ".join(f.item_name for f in favorites)}
 
     elif intent == "db_items":
         items = await item_service.get_items()
         if not items:
             return {"response": "Inventory is empty."}
-        return str("\n\n".join(f"{i.item_name}: {i.stock_available} units in stock" for i in items))
+        return {"response": "\n\n".join(f"{i.item_name}: {i.stock_available} units in stock" for i in items)}
 
     elif intent == "db_cart":
         temp_order = await order_repository.get_temp_order_item_details(user_id)
-        return {f"Cart total: ${temp_order['total_price']}"}
+        return {"response": f"Cart total: ${temp_order['total_price']}"}
 
     elif intent == "knowledge_base":
-        return await rag_service.handle_rag(user_message, client, weaviate_client)
+        answer = await rag_service.handle_rag(user_message, client, weaviate_client)
+        return {"response": answer}
 
     elif intent == "product_search":
         recommended_items = await rag_service.get_semantic_recommendations(user_message, weaviate_client)
 
         if not recommended_items:
             return {"response": "I couldn't find any items matching that description. Anything else?"}
-        # Return structured data so your frontend can show product cards
+
+        price_sort = rag_service._detect_price_sort(user_message)
+        if price_sort == "asc":
+            answer = "Here are the most affordable items:"
+        elif price_sort == "desc":
+            answer = "Here are the most expensive items:"
+        else:
+            answer = "I found some items that match your request:"
+
         return {
-            "answer": "I found some precious items that match your request:",
+            "answer": answer,
             "type": "product_recommendation",
             "products": recommended_items
-    }
+        }
 
-    # 3️⃣ Fallback — General GPT
+    # Fallback — General GPT
     general_messages = [
         {"role": "system", "content": "You are a helpful AI assistant for an e-commerce platform."},
         {"role": "user", "content": user_message}
     ]
 
     response = client.chat.completions.create(model="gpt-3.5-turbo", messages=general_messages, temperature=0.7)
-    return response.choices[0].message.content
+    return {"response": response.choices[0].message.content}
 
 
 async def detect_intent(user_message: str, client: OpenAI) -> str:
@@ -62,8 +71,10 @@ async def detect_intent(user_message: str, client: OpenAI) -> str:
         Classify the user's message into exactly one of these categories:
 
         - db_orders: Questions about order status, tracking, or history.
+        - db_favorites: Questions about the user's saved or favorite items.
+        - db_items: Requests to list all available products or inventory.
         - db_cart: Viewing, adding to, or removing items from the shopping cart.
-        - product_search: Requests for recommendations, gift ideas, or questions about item qualities 
+        - product_search: Requests for recommendations, gift ideas, or questions about item qualities
           (e.g., "Show me precious items," "I need an elegant gift," "What is the most expensive thing you have?").
         - knowledge_base: Store policies, shipping info, or "About Us" info.
         - general: Greetings, small talk, or unrelated questions.
