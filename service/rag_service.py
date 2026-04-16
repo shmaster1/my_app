@@ -62,14 +62,28 @@ async def handle_rag(user_message: str, client: OpenAI, weaviate_client):
     return answer
 
 
+def _detect_price_sort(query: str):
+    q = query.lower()
+    if any(w in q for w in ["cheapest", "lowest price", "most affordable", "least expensive", "cheap"]):
+        return "asc"
+    if any(w in q for w in ["most expensive", "priciest", "highest price", "most precious", "luxury", "premium"]):
+        return "desc"
+    return None
+
+
 async def get_semantic_recommendations(user_query: str, weaviate_client):
+    from weaviate.classes.query import Sort
+
     try:
         products = weaviate_client.collections.get("Item")
+
+        price_sort = _detect_price_sort(user_query)
 
         response = products.query.near_text(
             query=user_query,
             limit=3,
-            return_properties=["itemName", "price", "itemID", "content"]
+            return_properties=["itemName", "price", "itemID", "content"],
+            sort=Sort.by_property("price", ascending=(price_sort == "asc")) if price_sort else None
         )
 
         results = []
