@@ -64,21 +64,21 @@ async def handle_rag(user_message: str, client: OpenAI, weaviate_client):
 
 async def get_semantic_recommendations(user_query: str, weaviate_client):
     try:
-        products = weaviate_client.collections.get("Product")
+        products = weaviate_client.collections.get("Item")
 
         response = products.query.near_text(
             query=user_query,
             limit=3,
-            return_properties=["itemName", "price", "itemID", "content"]
+            return_properties=["item_name", "price", "item_id", "description"]
         )
 
         results = []
         for obj in response.objects:
             results.append({
-                "id": obj.properties["itemID"],
-                "name": obj.properties["itemName"],
+                "id": obj.properties["item_id"],
+                "name": obj.properties["item_name"],
                 "price": obj.properties["price"],
-                "description": obj.properties["content"]
+                "description": obj.properties["description"]
             })
 
         return results
