@@ -1,4 +1,4 @@
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Config(BaseSettings):
     MYSQL_USER: str = ""
@@ -21,9 +21,7 @@ class Config(BaseSettings):
     NEXT_PUBLIC_API_URL: str = ""
     ANTHROPIC_API_KEY: str = ""
 
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 #
 # class Config(BaseSettings):
 #     MYSQL_USER: str = os.getenv("MYSQL_USER")
