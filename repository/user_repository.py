@@ -1,10 +1,10 @@
+
 from typing import Optional, List
 
 from model.user import User
 from model.user_request import UserRequest
 from model.user_response import UserResponse
 from repository.database import database
-from service import user_service
 
 USERS_TABLE = "users"
 TABLE_FAVORITES = "favorite_items"
@@ -38,7 +38,7 @@ async def create_user(user: UserRequest, hashed_password: str) -> Optional[UserR
         INSERT INTO {USERS_TABLE} (username, first_name, last_name, email, phone, country, city, hashed_password, is_registered)
         VALUES (:username, :first_name, :last_name, :email, :phone, :country, :city, :hashed_password, :is_registered)
     """
-    user_dict = user.dict()
+    user_dict = user.model_dump()
     del user_dict["password"]
     values = {**user_dict, "hashed_password": hashed_password, "is_registered": True}
 
@@ -81,3 +81,5 @@ async def get_current_user_id(username: str) -> int:
     query = f"SELECT id FROM {USERS_TABLE} WHERE username = :username"
     result = await database.fetch_one(query, values={"username": username})
     return result[0] # returns as tuple e.g. (1,)
+
+
