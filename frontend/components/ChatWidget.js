@@ -52,11 +52,16 @@ export default function ChatWidget() {
         }
       );
       const data = await raw.json();
-      const reply = (
-        typeof data === "string" ? data
-        : typeof data === "object" && data !== null ? (data.response ?? data.detail ?? JSON.stringify(data))
-        : String(data)
-      ).replace(/\\n/g, "\n");
+      let reply;
+      if (typeof data === "string") {
+        reply = data;
+      } else if (data?.type === "product_recommendation") {
+        const lines = [data.answer, ...data.products.map((p) => `• ${p.name} — $${p.price}`)];
+        reply = lines.join("\n");
+      } else {
+        reply = (data?.response ?? data?.detail ?? JSON.stringify(data));
+      }
+      reply = reply.replace(/\\n/g, "\n");
       setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
     } catch {
       setMessages((prev) => [
