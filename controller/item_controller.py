@@ -27,6 +27,13 @@ async def filter_items(name: str) -> List[Item]:
         return items
     return []
 
+@router.get("/search_by_weaviate_id", status_code=status.HTTP_200_OK, response_model=List[Item])
+async def filter_items_by_id(items_ids: List[int]) -> List[ItemResponse]:
+    items = await item_service.filter_items_by_id(items_ids)
+    if len(items) > 0:
+        return items
+    return []
+
 @router.get("/{item_id}", status_code=status.HTTP_200_OK, response_model=ItemResponse)
 async def get_item(item_id: int) -> Optional[Item]:
     item = await item_service.get_item_by_id(item_id)

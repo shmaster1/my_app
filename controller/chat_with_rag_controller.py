@@ -25,12 +25,16 @@ def get_weaviate_client():
             auth_credentials=Auth.api_key(config.WEAVIATE_API_KEY),
             headers={"X-OpenAI-Api-Key": config.OPEN_AI_KEY}
         )
-        print("✅ Weaviate connected.")
+        print("✅ Connected to weaviate cloud.")
         return weaviate_client
-    except Exception as e:
-        print(f"⚠️ Weaviate connection failed: {e}")
-        weaviate_client = None
-        return None
+    except:
+        try:
+            weaviate_client = weaviate.connect_to_local(skip_init_checks=True)  # TODO: remove skip_init_checks when running against cloud
+            print("✅ Connected to weaviate locally")
+            return weaviate_client
+        except Exception as e:
+            print(f"⚠️ Weaviate connection failed: {e}")
+            return None
 
 @router.post("/")
 async def chat_with_customer(request: ChatOrchestratorRequest):
