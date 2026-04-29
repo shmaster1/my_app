@@ -89,7 +89,7 @@ export default function ChatWidget() {
           <div className="flex items-center justify-between px-4 py-3 bg-ink text-white">
             <div className="flex items-center gap-2">
               <Bot size={16} />
-              <span className="text-sm font-semibold">Chat Assistant</span>
+              <span className="text-base font-semibold">Chat Assistant</span>
             </div>
             <button onClick={() => setOpen(false)} className="hover:opacity-70 transition">
               <X size={16} />
@@ -114,7 +114,7 @@ export default function ChatWidget() {
                   {msg.role === "user" ? <User size={12} /> : <Bot size={12} />}
                 </div>
                 <div
-                  className={`max-w-[75%] text-xs px-3 py-2 rounded-xl whitespace-pre-wrap
+                  className={`max-w-[75%] text-sm px-3 py-2 rounded-xl whitespace-pre-wrap
                     ${msg.role === "user"
                       ? "bg-ink text-white rounded-tr-none"
                       : "bg-ash text-ink rounded-tl-none"
@@ -129,7 +129,7 @@ export default function ChatWidget() {
                 <div className="w-6 h-6 rounded-full bg-ash text-accent flex items-center justify-center shrink-0">
                   <Bot size={12} />
                 </div>
-                <div className="bg-ash text-fog text-xs px-3 py-2 rounded-xl rounded-tl-none">
+                <div className="bg-ash text-fog text-sm px-3 py-2 rounded-xl rounded-tl-none">
                   Thinking…
                 </div>
               </div>
@@ -146,7 +146,7 @@ export default function ChatWidget() {
               onKeyDown={handleKeyDown}
               placeholder="Type a message…"
               disabled={loading}
-              className="flex-1 text-xs bg-ash rounded-xl px-3 py-2.5 text-ink placeholder:text-fog
+              className="flex-1 text-sm bg-ash rounded-xl px-3 py-2.5 text-ink placeholder:text-fog
                 focus:outline-none focus:ring-2 focus:ring-ink/10 transition disabled:opacity-50"
             />
             <button
