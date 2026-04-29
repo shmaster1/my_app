@@ -2,11 +2,12 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/router";
 import Layout from "../components/Layout";
 import ProductCard from "../components/ProductCard";
-import { api } from "../lib/api";
+import { api, getUserIdFromToken } from "../lib/api";
 
 export default function Dashboard() {
   const router = useRouter();
   const [products, setProducts] = useState([]);
+  const [favoriteIds, setFavoriteIds] = useState(new Set());
   const allProductsRef = useRef([]);
 
   useEffect(() => {
@@ -16,6 +17,13 @@ export default function Dashboard() {
       allProductsRef.current = p;
       setProducts(p);
     }).catch(() => {});
+
+    const userId = getUserIdFromToken();
+    if (userId) {
+      api.getFavorites(userId).then((favs) => {
+        setFavoriteIds(new Set(favs.map((f) => f.item_id ?? f.id)));
+      }).catch(() => {});
+    }
   }, []);
 
   const searchSeqRef = useRef(0);
@@ -40,7 +48,7 @@ export default function Dashboard() {
         <h1 className="font-display text-4xl tracking-widest text-ink mb-6">DASHBOARD</h1>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} isFavorited={favoriteIds.has(product.id)} />
           ))}
         </div>
       </div>

@@ -3,10 +3,10 @@ import { ShoppingCart, Heart, CheckCircle } from "lucide-react";
 import { useCart } from "./CartContext";
 import { api, getUserIdFromToken } from "../lib/api";
 
-export default function ProductCard({ product, style }) {
+export default function ProductCard({ product, style, isFavorited = false }) {
   const { addToCart } = useCart();
   const [added, setAdded] = useState(false);
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(isFavorited);
 
   const handleAdd = () => {
     addToCart(product);
@@ -62,8 +62,9 @@ export default function ProductCard({ product, style }) {
         {/* Wishlist */}
         <button
           onClick={handleLike}
-          className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-white/80 backdrop-blur-sm
-            flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
+          className={`absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-white/80 backdrop-blur-sm
+            flex items-center justify-center transition
+            ${liked ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
         >
           <Heart size={13} fill={liked ? "#d4a853" : "none"} stroke={liked ? "#d4a853" : "#0f0f0f"} />
         </button>
