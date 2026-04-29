@@ -61,8 +61,7 @@ async def handle_rag(user_message: str, client: OpenAI, weaviate_client):
 
     return answer
 
-
-def _detect_price_sort(query: str):
+def detect_price_sort(query: str):
     q = query.lower()
     if any(w in q for w in ["cheapest", "lowest price", "most affordable", "least expensive", "cheap"]):
         return "asc"
@@ -70,35 +69,24 @@ def _detect_price_sort(query: str):
         return "desc"
     return None
 
-
-async def get_semantic_recommendations(user_query: str, weaviate_client):
+async def get_semantic_recommendations(user_query: str, weaviate_client, client: OpenAI):
     try:
+        embedding = client.embeddings.create(
+            model="text-embedding-3-small",
+            input=user_query
+        ).data[0].embedding
+
         products = weaviate_client.collections.get("Item")
-
-        price_sort = _detect_price_sort(user_query)
-        # Fetch more candidates when sorting by price so the sort is meaningful
-        fetch_limit = 10 if price_sort else 3
-
-        response = products.query.near_text(
-            query=user_query,
-            limit=fetch_limit,
-            return_properties=["itemName", "price", "itemID", "content"],
+        response = products.query.near_vector(
+            near_vector=embedding,
+            limit=10,
+            return_properties=["itemID"]
         )
 
-        results = []
-        for obj in response.objects:
-            results.append({
-                "id": obj.properties["itemID"],
-                "name": obj.properties["itemName"],
-                "price": obj.properties["price"],
-                "description": obj.properties["content"]
-            })
-
-        if price_sort:
-            results.sort(key=lambda x: x["price"], reverse=(price_sort == "desc"))
-            results = results[:3]
-
-        return results
+        if not response.objects:
+            print(f"No relevant items found for {user_query}")
+            return []
+        return [obj.properties["itemID"] for obj in response.objects]
 
     except Exception as e:
         print(f"[Weaviate] Semantic search error: {e}")

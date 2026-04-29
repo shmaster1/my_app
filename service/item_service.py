@@ -16,7 +16,7 @@ async def get_items() -> List[ItemResponse]:
              for item in items]
 
 async def filter_items(name: str) -> List[Item]:
-    items = await item_repository.filter_items(name)
+    items = await item_repository.filter_items_by_name(name)
     return [Item(
                 id=item.id,
                 item_name=item.item_name,
@@ -25,6 +25,9 @@ async def filter_items(name: str) -> List[Item]:
                 image_url=item.image_url,
             )
             for item in items]
+
+async def filter_items_by_id(item_ids: List[int]) -> List[ItemResponse]:
+    return await item_repository.filter_items_by_ids(item_ids)
 
 async def get_item_by_id(item_id: int) -> Item:
     item = await item_repository.get_item_by_id(item_id)
