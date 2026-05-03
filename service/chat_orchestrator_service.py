@@ -5,10 +5,10 @@ from repository import order_repository
 from service import rag_service, favorite_item_service, item_service, order_service
 
 
-async def chat_with_customer(user_message: str, client: OpenAI, weaviate_client, user_id: int):
+async def chat_with_customer(user_message: str, client: OpenAI, weaviate_client, user_id: int, fallback_client: OpenAI = None):
 
     # 1️⃣ Detect intent using AI
-    intent = await detect_intent(user_message, client)
+    intent = await detect_intent(user_message, client, fallback_client)
 
     if intent == "db_orders":
         orders = await order_service.get_all_by_user_id(user_id)
@@ -67,11 +67,17 @@ async def chat_with_customer(user_message: str, client: OpenAI, weaviate_client,
         {"role": "user", "content": user_message}
     ]
 
-    response = client.chat.completions.create(model="gpt-3.5-turbo", messages=general_messages, temperature=0.7)
-    return {"response": response.choices[0].message.content}
+    try:
+        response = client.chat.completions.create(model="gpt-3.5-turbo", messages=general_messages, temperature=0.7)
+        return {"response": response.choices[0].message.content}
+    except openai.RateLimitError:
+        if fallback_client:
+            response = fallback_client.chat.completions.create(model="llama-3.1-8b-instant", messages=general_messages, temperature=0.7)
+            return {"response": response.choices[0].message.content}
+        return {"response": "I'm currently unavailable due to high demand or exceeded the max quota!"}
 
 
-async def detect_intent(user_message: str, client: OpenAI) -> str:
+async def detect_intent(user_message: str, client: OpenAI, fallback_client: OpenAI = None) -> str:
     system_prompt = """
         You are an AI intent classifier for a luxury e-commerce store.
         Classify the user's message into exactly one of these categories:
@@ -99,6 +105,14 @@ async def detect_intent(user_message: str, client: OpenAI) -> str:
         intent_data = json.loads(intent_json)
         return intent_data.get("intent", "general")
     except openai.RateLimitError:
+        if fallback_client:
+            try:
+                response = fallback_client.chat.completions.create(model="llama-3.1-8b-instant", messages=messages, temperature=0)
+                intent_json = response.choices[0].message.content
+                intent_data = json.loads(intent_json)
+                return intent_data.get("intent", "general")
+            except Exception:
+                return "general"
         return "quota_exceeded"
     except (openai.APIConnectionError, openai.APITimeoutError):
         return "service_unavailable"

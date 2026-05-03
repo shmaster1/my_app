@@ -15,6 +15,7 @@ class Config(BaseSettings):
     ALGORITHM: str = ""
     TOKEN_EXPIRY_TIME: float = 0
     OPEN_AI_KEY: str = ""
+    GROQ_API_KEY: str = ""
     SYSTEM_PROMPT: str = ""
     WEAVIATE_BASE_URL: str = ""
     WEAVIATE_API_KEY: str = ""
