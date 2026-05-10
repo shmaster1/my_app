@@ -5,10 +5,12 @@ from repository import order_repository
 from service import rag_service, favorite_item_service, item_service, order_service
 
 
-async def chat_with_customer(user_message: str, client: OpenAI, weaviate_client, user_id: int, fallback_client: OpenAI = None):
+async def chat_with_customer(user_message: str, client: OpenAI, weaviate_client, user_id: int, fallback_client: OpenAI = None, history: list = None):
+
+    history = history or []
 
     # 1️⃣ Detect intent using AI
-    intent = await detect_intent(user_message, client, fallback_client)
+    intent = await detect_intent(user_message, client, fallback_client, history)
 
     if intent == "db_orders":
         orders = await order_service.get_all_by_user_id(user_id)
@@ -53,7 +55,8 @@ async def chat_with_customer(user_message: str, client: OpenAI, weaviate_client,
             filtered_items = sorted_items[:3]
             answer = "Here are the most affordable items:" if price_sort == "asc" else "Here are the most expensive items:"
         else:
-            recommended_items = await rag_service.get_semantic_recommendations(user_message, weaviate_client, client)
+            search_query = await resolve_search_query(user_message, history, client, fallback_client)
+            recommended_items = await rag_service.get_semantic_recommendations(search_query, weaviate_client, client)
             if not recommended_items:
                 return {"response": "I couldn't find any items matching that description. Anything else?"}
             filtered_items = await item_service.filter_items_by_id(recommended_items)
@@ -64,6 +67,7 @@ async def chat_with_customer(user_message: str, client: OpenAI, weaviate_client,
     # Fallback — General GPT
     general_messages = [
         {"role": "system", "content": "You are a helpful AI assistant for an e-commerce platform."},
+        *history[-10:],
         {"role": "user", "content": user_message}
     ]
 
@@ -77,7 +81,7 @@ async def chat_with_customer(user_message: str, client: OpenAI, weaviate_client,
         return {"response": "I'm currently unavailable due to high demand or exceeded the max quota!"}
 
 
-async def detect_intent(user_message: str, client: OpenAI, fallback_client: OpenAI = None) -> str:
+async def detect_intent(user_message: str, client: OpenAI, fallback_client: OpenAI = None, history: list = None) -> str:
     system_prompt = """
         You are an AI intent classifier for a luxury e-commerce store.
         Classify the user's message into exactly one of these categories:
@@ -94,8 +98,10 @@ async def detect_intent(user_message: str, client: OpenAI, fallback_client: Open
         Return ONLY a JSON object: {"intent": "category_name"}
     """
 
+    history = history or []
     messages = [
         {"role": "system", "content": system_prompt},
+        *history[-6:],
         {"role": "user", "content": user_message}
     ]
 
@@ -120,3 +126,34 @@ async def detect_intent(user_message: str, client: OpenAI, fallback_client: Open
         return "general"
     except Exception:
         return "general"
+
+
+async def resolve_search_query(user_message: str, history: list, client: OpenAI, fallback_client: OpenAI = None) -> str:
+    if not history:
+        return user_message
+
+    system_prompt = (
+        "You are a search query assistant. Given a conversation history and the user's latest message, "
+        "rewrite the latest message into a single standalone product search query. "
+        "Return only the search query string, nothing else."
+    )
+
+    messages = [
+        {"role": "system", "content": system_prompt},
+        *history[-6:],
+        {"role": "user", "content": user_message}
+    ]
+
+    try:
+        response = client.chat.completions.create(model="gpt-3.5-turbo", messages=messages, temperature=0)
+        return response.choices[0].message.content.strip() or user_message
+    except openai.RateLimitError:
+        if fallback_client:
+            try:
+                response = fallback_client.chat.completions.create(model="llama-3.1-8b-instant", messages=messages, temperature=0)
+                return response.choices[0].message.content.strip() or user_message
+            except Exception:
+                return user_message
+        return user_message
+    except Exception:
+        return user_message

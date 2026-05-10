@@ -45,11 +45,13 @@ async def chat_with_customer(request: ChatOrchestratorRequest):
             status_code=503,
             detail="Chat service is temporarily unavailable."
         )
+    history = [{"role": m.role, "content": m.content} for m in request.history]
     ai_response = await chat_orchestrator_service.chat_with_customer(
         user_message=request.user_text,
         client=openai_client,
         weaviate_client=client,
         user_id=request.user_id,
-        fallback_client=groq_client
+        fallback_client=groq_client,
+        history=history
     )
     return ai_response

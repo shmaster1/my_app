@@ -48,7 +48,7 @@ export default function ChatWidget() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("jwt_token")}`,
           },
-          body: JSON.stringify({ user_id: userId, user_text: text }),
+          body: JSON.stringify({ user_id: userId, user_text: text, history: messages.slice(-10) }),
         }
       );
       const data = await raw.json();
