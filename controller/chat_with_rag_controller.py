@@ -13,6 +13,7 @@ router = APIRouter(
 
 config = Config()
 openai_client = OpenAI(api_key=config.OPEN_AI_KEY)
+groq_client = OpenAI(api_key=config.GROQ_API_KEY, base_url="https://api.groq.com/openai/v1") if config.GROQ_API_KEY else None
 weaviate_client = None
 
 def get_weaviate_client():
@@ -48,6 +49,7 @@ async def chat_with_customer(request: ChatOrchestratorRequest):
         user_message=request.user_text,
         client=openai_client,
         weaviate_client=client,
-        user_id=request.user_id
+        user_id=request.user_id,
+        fallback_client=groq_client
     )
     return ai_response
