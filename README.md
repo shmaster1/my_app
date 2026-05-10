@@ -54,7 +54,9 @@ Structured eCommerce queries → Database
 - Next.js 14 (React 18, Tailwind CSS)
 - Redis
 - Weaviate
-- OpenAI
+- OpenAI (GPT-3.5 Turbo — primary LLM)
+- Groq + Llama 3.1 8B Instant (fallback LLM on OpenAI rate limit)
+
 ---
 
 ## ⚙️ Setup Instructions / Quick Start
