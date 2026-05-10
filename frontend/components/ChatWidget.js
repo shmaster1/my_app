@@ -56,7 +56,7 @@ export default function ChatWidget() {
       if (typeof data === "string") {
         reply = data;
       } else if (data?.type === "product_recommendation") {
-        const lines = [data.answer, ...data.products.map((p) => `• ${p.name} — $${p.price}`)];
+        const lines = [data.answer, ...data.products.map((p) => `• ${p.item_name} — $${p.price}`)];
         reply = lines.join("\n");
       } else {
         reply = (data?.response ?? data?.detail ?? JSON.stringify(data));
