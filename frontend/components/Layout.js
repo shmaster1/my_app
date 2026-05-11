@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
@@ -8,6 +8,11 @@ const MAIN_PAGES = ["/", "/orders", "/favorites"];
 
 export default function Layout({ children, onSearch }) {
   const router = useRouter();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [router.pathname]);
 
   useEffect(() => {
     if (MAIN_PAGES.includes(router.pathname)) {
@@ -17,9 +22,9 @@ export default function Layout({ children, onSearch }) {
 
   return (
     <div className="min-h-screen bg-ash">
-      <Sidebar />
-      <Topbar onSearch={onSearch} />
-      <main className="ml-60 pt-16 min-h-screen">
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <Topbar onSearch={onSearch} onMenuToggle={() => setSidebarOpen((o) => !o)} />
+      <main className="md:ml-60 pt-16 min-h-screen">
         {children}
       </main>
       <ChatWidget />

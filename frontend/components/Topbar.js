@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Search, ShoppingCart, Bell, ChevronDown, User, Settings, X } from "lucide-react";
+import { Search, ShoppingCart, Bell, ChevronDown, User, Settings, X, Menu } from "lucide-react";
 
 const GRADIENT_MAP = {
   "gradient-1": "from-violet-400 to-indigo-600",
@@ -51,7 +51,7 @@ function AvatarBubble({ avatarId, initials, size = "w-7 h-7" }) {
   );
 }
 
-export default function Topbar({ onSearch }) {
+export default function Topbar({ onSearch, onMenuToggle }) {
   const { count } = useCart();
   const [cartOpen, setCartOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -114,7 +114,16 @@ export default function Topbar({ onSearch }) {
 
   return (
     <>
-      <header className="fixed top-0 left-60 right-0 h-16 bg-white border-b border-mist flex items-center px-6 gap-4 z-20">
+      <header className="fixed top-0 left-0 md:left-60 right-0 h-16 bg-white border-b border-mist flex items-center px-3 md:px-6 gap-4 z-20">
+        {/* Hamburger — mobile only */}
+        <button
+          onClick={onMenuToggle}
+          className="md:hidden w-9 h-9 flex items-center justify-center rounded-xl hover:bg-ash transition"
+          aria-label="Open menu"
+        >
+          <Menu size={20} />
+        </button>
+
         {/* Search — dashboard only */}
         {showSearch && (
           <div className="flex-1 relative max-w-2xl">
