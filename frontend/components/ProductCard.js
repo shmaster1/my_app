@@ -64,7 +64,7 @@ export default function ProductCard({ product, style, isFavorited = false }) {
           onClick={handleLike}
           className={`absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-white/80 backdrop-blur-sm
             flex items-center justify-center transition
-            ${liked ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
+            ${liked ? "opacity-100" : "opacity-0 group-hover:opacity-100 max-md:opacity-100"}`}
         >
           <Heart size={13} fill={liked ? "#d4a853" : "none"} stroke={liked ? "#d4a853" : "#0f0f0f"} />
         </button>
