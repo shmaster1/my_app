@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import {
-  LayoutDashboard, Heart, Package, LogOut,
+  LayoutDashboard, Heart, Package, LogOut, X,
 } from "lucide-react";
 import { api } from "../lib/api";
 
@@ -13,7 +13,7 @@ const navItems = [
   ]},
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, onClose }) {
   const router = useRouter();
 
   const handleLogout = () => {
@@ -22,17 +22,38 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="fixed top-0 left-0 h-screen w-60 bg-white border-r border-mist flex flex-col z-30">
+    <>
+      {/* Mobile backdrop */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 z-20 md:hidden"
+          onClick={onClose}
+        />
+      )}
+
+      <aside className={`fixed top-0 left-0 h-screen w-60 bg-white border-r border-mist flex flex-col z-30
+        transition-transform duration-300
+        ${isOpen ? "translate-x-0" : "-translate-x-full"}
+        md:translate-x-0`}>
       {/* Logo */}
-      <Link href="/" className="flex items-center gap-3 px-6 py-5 border-b border-mist hover:bg-ash transition">
-        <div className="w-8 h-8 bg-ink rounded flex items-center justify-center">
-          <span className="text-white font-display text-lg leading-none">S</span>
-        </div>
-        <div>
-          <div className="font-display text-xl tracking-widest leading-none text-ink">SHAPP</div>
-          <div className="text-[10px] tracking-[0.2em] text-fog font-medium uppercase">Dashboard</div>
-        </div>
-      </Link>
+      <div className="flex items-center border-b border-mist">
+        <Link href="/" className="flex flex-1 items-center gap-3 px-6 py-5 hover:bg-ash transition">
+          <div className="w-8 h-8 bg-ink rounded flex items-center justify-center">
+            <span className="text-white font-display text-lg leading-none">S</span>
+          </div>
+          <div>
+            <div className="font-display text-xl tracking-widest leading-none text-ink">SHAPP</div>
+            <div className="text-[10px] tracking-[0.2em] text-fog font-medium uppercase">Dashboard</div>
+          </div>
+        </Link>
+        <button
+          onClick={onClose}
+          className="md:hidden mr-3 w-8 h-8 flex items-center justify-center rounded-lg hover:bg-ash transition"
+          aria-label="Close menu"
+        >
+          <X size={16} />
+        </button>
+      </div>
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto px-4 py-6 space-y-6">
@@ -75,6 +96,7 @@ export default function Sidebar() {
           Logout
         </button>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 }
