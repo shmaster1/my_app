@@ -68,7 +68,7 @@ export default function Favorites() {
                   <button
                     onClick={() => handleRemove(item.item_id)}
                     className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-white/80 backdrop-blur-sm
-                      flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
+                      flex items-center justify-center transition"
                     title="Remove from favorites"
                   >
                     <Heart size={13} fill="#d4a853" stroke="#d4a853" />
