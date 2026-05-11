@@ -81,10 +81,10 @@ export default function ChatWidget() {
   };
 
   return (
-    <div className="fixed top-20 right-6 z-50 flex flex-col items-end gap-3">
+    <div className="fixed bottom-6 right-4 md:top-20 md:bottom-auto md:right-6 z-50 flex flex-col items-end gap-3">
       {/* Chat panel */}
       {open && (
-        <div className="w-80 h-[480px] bg-white border border-mist rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+        <div className="w-[calc(100vw-32px)] md:w-80 h-[420px] md:h-[480px] bg-white border border-mist rounded-2xl shadow-2xl flex flex-col overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 bg-ink text-white">
             <div className="flex items-center gap-2">

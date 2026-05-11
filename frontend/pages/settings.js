@@ -113,8 +113,8 @@ export default function Settings() {
 
   return (
     <Layout>
-      <div className="px-8 py-7 max-w-2xl">
-        <h1 className="font-display text-4xl tracking-widest text-ink mb-8">SETTINGS</h1>
+      <div className="px-4 md:px-8 py-5 md:py-7 max-w-2xl">
+        <h1 className="font-display text-3xl md:text-4xl tracking-widest text-ink mb-8">SETTINGS</h1>
 
         {/* Avatar picker */}
         <div className="rounded-2xl border border-mist overflow-hidden">

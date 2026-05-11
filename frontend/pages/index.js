@@ -44,8 +44,8 @@ export default function Dashboard() {
 
   return (
     <Layout onSearch={handleSearch}>
-      <div className="px-8 py-7">
-        <h1 className="font-display text-4xl tracking-widest text-ink mb-6">DASHBOARD</h1>
+      <div className="px-4 md:px-8 py-5 md:py-7">
+        <h1 className="font-display text-3xl md:text-4xl tracking-widest text-ink mb-6">DASHBOARD</h1>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} isFavorited={favoriteIds.has(product.id)} />

@@ -34,8 +34,8 @@ export default function Favorites() {
 
   return (
     <Layout>
-      <div className="px-8 py-7">
-        <h1 className="font-display text-4xl tracking-widest text-ink mb-6">FAVORITES</h1>
+      <div className="px-4 md:px-8 py-5 md:py-7">
+        <h1 className="font-display text-3xl md:text-4xl tracking-widest text-ink mb-6">FAVORITES</h1>
 
         {loading && (
           <p className="text-fog text-sm">Loading...</p>
