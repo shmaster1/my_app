@@ -32,7 +32,7 @@ export default function ProductCard({ product, style, isFavorited = false }) {
   return (
     <div
       className="bg-white rounded-2xl overflow-hidden border border-mist/60
-        hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 group fade-up"
+        hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 group fade-up flex flex-col"
       style={style}
     >
       {/* Image */}
@@ -71,14 +71,14 @@ export default function ProductCard({ product, style, isFavorited = false }) {
       </div>
 
       {/* Info */}
-      <div className="p-4">
+      <div className="p-4 flex flex-col flex-1">
         <h3 className="font-semibold text-sm text-ink leading-tight">{product.name}</h3>
         <div className="flex items-center gap-1 mt-0.5">
           <span className="text-sm font-semibold text-ink">${product.price.toFixed(2)}</span>
         </div>
         <p className="text-xs text-fog mt-0.5">Stock: {product.stock}</p>
 
-        <div className="flex items-center gap-2 mt-3">
+        <div className="flex items-center gap-2 mt-auto pt-3">
           <button
             onClick={handleAdd}
             disabled={product.stock === 0}
